@@ -9,9 +9,9 @@ public class MessageService : IMessageService
     private readonly ServiceBusSender _sender;
     private readonly ILogger<MessageService> _logger;
 
-    public MessageService(ServiceBusSettings serviceBusSettings, ILogger<MessageService> logger)
+    public MessageService(ServiceBusClient client, ServiceBusSettings serviceBusSettings, ILogger<MessageService> logger)
     {
-        _client = new ServiceBusClient(serviceBusSettings.ConnectionString);
+        _client = client;
         _sender = _client.CreateSender(serviceBusSettings.Topic);
         _logger = logger;
     }

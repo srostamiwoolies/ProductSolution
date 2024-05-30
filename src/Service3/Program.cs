@@ -3,6 +3,8 @@ using Service3.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -14,6 +16,9 @@ builder.Logging.AddConsole();
 var serviceBusSettings = builder.Configuration.GetSection("ServiceBusSettings").Get<ServiceBusSettings>();
 
 builder.Services.AddSingleton(serviceBusSettings);
+
+builder.AddAzureServiceBusClient("Messaging");
+
 builder.Services.AddScoped<IMessageService, MessageService>();
 
 builder.Services.AddHttpClient("Service2", client =>
@@ -25,6 +30,8 @@ builder.Services.AddHttpClient("Service2", client =>
 });
 
 var app = builder.Build();
+
+app.MapDefaultEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
