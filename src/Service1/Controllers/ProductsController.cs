@@ -14,6 +14,13 @@ public class ProductsController : ControllerBase
         _productService = productService;
     }
 
+    [HttpGet]
+
+    public async Task<IEnumerable<Models.Product>> GetAll()
+    {
+        return await _productService.GetAllAsync();
+    }
+
     [HttpGet("{id}")]
     public async Task<Models.Product> Get(string id)
     {

@@ -43,4 +43,9 @@ public class ProductService : IProductService
     {
         await _repository.CreateAsync(product);
     }
+
+    public Task<List<Product>> GetAllAsync()
+    {
+        return _repository.GetAllAsync();
+    }
 }

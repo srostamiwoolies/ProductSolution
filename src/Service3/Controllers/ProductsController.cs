@@ -18,6 +18,20 @@ public class ProductsController : ControllerBase
         _messageService = messageService;
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var response = await _httpClient.GetAsync($"/api/products");
+
+        if (response.IsSuccessStatusCode)
+        {
+            var content = await response.Content.ReadAsStringAsync();
+            return Ok(content);
+        }
+
+        return StatusCode((int)response.StatusCode);
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetProducts(string id)
     {

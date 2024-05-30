@@ -22,4 +22,9 @@ public class MongoProductRepository : IProductRepository
     {
         await _collection.InsertOneAsync(product);
     }
+
+    public Task<List<Product>> GetAllAsync()
+    {
+        return _collection.Find(p => true).ToListAsync();
+    }
 }
