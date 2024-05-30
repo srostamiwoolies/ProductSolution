@@ -7,6 +7,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddHttpClient("Service1", client =>
+{
+    var url = builder.Configuration["Service1Settings:Url"];
+    client.BaseAddress = new Uri(url);
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

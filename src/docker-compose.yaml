@@ -1,0 +1,86 @@
+version: '3.7'
+
+services:
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodbdata:/data/db
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=password
+      
+  redis:
+    container_name: redis
+    image: redis:7.0.2
+    restart: always
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    environment:
+      - REDIS_REPLICATION_MODE=master
+  
+  workerservice:
+    container_name: workerservice
+    build:
+      context: .
+      dockerfile: WorkerServiceDockerfile
+    depends_on:
+      - mongodb
+      - redis
+    environment:
+      - ConnectionStrings__MongoDB=mongodb://mongodb:27017/ProductsDb
+      - ServiceBusSettings__ConnectionString=Endpoint=sb://aspiretest.servicebus.windows.net/;SharedAccessKeyName=M;SharedAccessKey=BJtojXwL97B2SglVrg1aDVx6fCQVU7kyZ+ASbF4z80k=;EntityPath=t1
+
+  service1:
+    container_name: service1
+    build:
+      context: .
+      dockerfile: Service1Dockerfile
+    ports:
+      - "5000:8080"
+    depends_on:
+      - mongodb
+      - redis
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__MongoDB=mongodb://mongodb:27017/ProductsDb
+
+  service2:
+    container_name: service2
+    build:
+      context: .
+      dockerfile: Service2Dockerfile
+    ports:
+      - "5001:8080"
+    depends_on:
+      - service1
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Service1Settings__Url=http://service1:8080
+
+  service3:
+    container_name: service3
+    build:
+      context: .
+      dockerfile: Service3Dockerfile
+    ports:
+      - "5002:8080"
+    depends_on:
+      - service2
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Service2Settings__Url=http://service2:8080
+      - ServiceBusSettings__ConnectionString=Endpoint=sb://aspiretest.servicebus.windows.net/;SharedAccessKeyName=M;SharedAccessKey=BJtojXwL97B2SglVrg1aDVx6fCQVU7kyZ+ASbF4z80k=;EntityPath=t1
+      
+volumes:
+  mongodbdata:

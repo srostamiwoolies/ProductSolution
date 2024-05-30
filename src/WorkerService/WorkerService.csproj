@@ -8,6 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.17.5" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="MongoDB.Bson" Version="2.25.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.25.0" />
   </ItemGroup>
 </Project>
