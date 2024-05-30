@@ -20,6 +20,7 @@ builder.AddProject<Projects.Service2>("service2");
 builder.AddProject<Projects.Service3>("service3")
     .WithReference(serviceBus);
 
-builder.AddProject<Projects.WorkerService>("workerservice");
+builder.AddProject<Projects.WorkerService>("workerservice")
+    .WithReference(mongodb);
 
 builder.Build().Run();
